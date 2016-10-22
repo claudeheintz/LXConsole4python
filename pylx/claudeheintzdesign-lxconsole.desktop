@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=LXConsole
+Comment=Teaching lighting software too the next generation
+TryExec=/home/pi/pylx/lxconsole.py
+Exec=python /home/pi/pylx/lxconsole.py
+Icon=/home/pi/pylx/lxconsoleicon.png
+MimeType=application/asc
+Actions=;

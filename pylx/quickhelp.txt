@@ -1,0 +1,91 @@
+LXConsole|Python v 0.3
+The command line has been enhanced in v0.3, but is still very basic.
+Commands are initiated by pressing <return> except in the case where two digits are entered as a level.  100% is entered using the "f" key.
+
+Set channel level:  a="@", t=">", f="@100", x="@0"
+		channel@level
+		channel>channel@level
+		channel,channel@level
+		channel,channel,channel...@level
+   
+Record a cue:	r="record "
+		record cueNumber
+		
+Set current cue:	q="cue "
+		cue cueNumber
+Show all cues:
+		cue ?
+      
+Set fade time:	t="time "
+		time xfade
+		time up down
+		time up down follow
+		time up waitup down waitdown
+		time up waitup down waitdown follow
+   
+Patch address to channel:	p="patch "
+		patch address channel
+		patch address channel level
+		patch address channel level option
+
+Set Dimmer option:			P="dimmer_option"
+		dimmer_option address option
+		dimmer_option address option level
+	
+Dimmer options are 0=normal, 1=non-dim, 2=always on, 3=no-master
+
+Show next page:
+		]
+Show previous page:
+		[	
+Show patch:
+		patch ?
+Show Dimmer Options:
+		dimmer_option ? 
+		
+Set OSC message:	o="osc "
+		osc message
+		(message format: ip:port~addressPattern)
+Show all OSC messages:
+		osc ?
+
+Examples:
+            Set channel 20 to full: <2><0><f>
+        Set chanels 1 to 10 at 50%: <1><t><1><0><a><5><0>
+     Set chanels 1, 3 and 5 to 75%: <1><,><3><,><5><a><7><5>
+  Set the time of cue 5 to 10 secs: <q><5><t><1><0><return>
+
+Note: setting the current cue with the 'cue' command does two things.
+First time commands always apply to the current cue.  Second, the
+'cue' command does not put that cue into the output.  But, it does
+cause that cue to be the next executed by the Go button.
+
+OSC messages can be sent when a cue is executed.  The format for
+defining an OSC message is ip:port~address.  For example, 
+osc 10.110.1.2:53000~/cue/1/start would set the OSC message such
+that it would tell QLab running on a machine with the IP address
+10.110.1.2 to start cue one when the current cue is run.
+
+Typing "o" and pressing return will clear the OSC message from the
+current cue.
+
+File Menu:
+  Open opens a USITT ascii file
+  Save saves a USITT ascii file
+  Exit quits the application
+
+Live Menu:
+  OSC toggles OSC input.
+	
+Application Options:
+  Including the number of dimmer and channels, the target address
+  for ArtNet output, and the port to listen on for OSC input are
+  defined in the lxconsole.properties file.  This file is read when
+  the application starts.
+
+.....................................................................
+
+LXConsole|Python
+Copyright 2014 Claude Heintz Design.
+See source files for license info.
+Art-Net(TM) Designed by and Copyright Artistic Licence (UK) Ltd
