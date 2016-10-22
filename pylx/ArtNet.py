@@ -6,7 +6,7 @@
 #  see license included with this distribution or
 #  https://www.claudeheintzdesign.com/lx/opensource.html
 #
-#	Art-Net(TM) Designed by and Copyright Artistic Licence Holdings Ltd
+#	Art-Net(TM) Designed by and Copyright Artistic Licence Holdings Ltd.
 
 
 import socket
