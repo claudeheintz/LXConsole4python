@@ -3,7 +3,7 @@
 #   lxconsole.py
 #
 #	by Claude Heintz
-#	copyright 2014 by Claude Heintz Design
+#	copyright 2014-15 by Claude Heintz Design
 #
 #   lxconsole.py is free software: you can redistribute it and/or modify
 #   it for any purpose provided the following conditions are met:
@@ -38,7 +38,8 @@
 #
 #     This file contains the main interface for a simple lighting control application
 #     The user interface is provided through Tkinter
-#     if Tkinter is not installed, on linux use:      sudo apt-get install python-tk	
+#     if Tkinter is not installed, on linux use:      sudo apt-get install python-tk
+#     refer to READ ME.txt for configursation information	
 #
 #################################################################
 
@@ -64,27 +65,32 @@ class App:
 		master.bind('<Return>', self.read_cmd)
 		
 		#read application options
-		props = CTProperties()
+		self.props = CTProperties()
 		cpath = os.path.realpath(__file__)
 		self.pylxdir = os.path.dirname(cpath)
-		props.parseFile( self.pylxdir + "/lxconsole.properties")
-		chans = props.intForKey("channels", 300)
-		dims = props.intForKey("dimmers", 512)
-		ip = props.stringForKey("artip", "10.255.255.255")
-		self.oscport = int(props.stringForKey("oscport", "7688"))
-		self.echo_osc_ip = props.stringForKey("echo_osc_ip", "none")
-		self.echo_osc_port = int(props.stringForKey("echo_osc_port", "9000"))
-		
+		self.props.parseFile( self.pylxdir + "/lxconsole.properties")
+		chans = self.props.intForKey("channels", 300)
+		dims = self.props.intForKey("dimmers", 512)
+	
 		#create cues
-		self.cues = LXCues(chans, dims, None, ip) #creates Art-Net interface sending to ip
+		self.cues = LXCues(chans, dims)
 		self.cues.delegate = self
-		self.cues.startLiveOutput()
 		self.update_thread = None
 		self.updating = False
 		self.path = ""
 		self.lastcomplete = None
 		self.back = None
 		self.oscin = None
+		
+		#setup output interface
+		use_interface = self.props.stringForKey("interface", "")
+		if use_interface == "widget":
+			self.set_usb_out()
+		else:
+			self.set_artnet_out()
+		self.oscport = int(self.props.stringForKey("oscport", "7688"))
+		self.echo_osc_ip = self.props.stringForKey("echo_osc_ip", "none")
+		self.echo_osc_port = int(self.props.stringForKey("echo_osc_port", "9000"))
 		
 		#create main tk frame
 		f = Frame(master, height=500, width=580)
@@ -158,6 +164,8 @@ class App:
 		self.oscIN = BooleanVar()
 		livemenu=Menu(menubar, tearoff=0)
 		livemenu.add_checkbutton(label="OSC", onvalue=True, offvalue=False, variable=self.oscIN, command=self.menuOSC)
+		livemenu.add_command(label='Set Output to USB', command=self.menu_set_usb_out)
+		livemenu.add_command(label='Set Output to Art-Net', command=self.menu_set_artnet_out)
 		menubar.add_cascade(label='Live', menu=livemenu)
 		
 		helpmenu=Menu(menubar, tearoff=0)
@@ -168,6 +176,35 @@ class App:
 		master.config(menu=menubar)
 		
 		self.e.focus_set()
+
+
+#########################################
+#
+#	menu methods handle setting the output interface
+#
+#########################################
+
+	def set_usb_out(self):
+		if self.cues.livecue.output != None:
+			self.cues.livecue.output.close()
+		try:
+			from DMXUSBPro import DMXUSBProInterface
+			serial_port = self.props.stringForKey("widget", "")
+			iface = DMXUSBProInterface(serial_port)
+			self.cues.livecue.output = iface
+			iface.startSending()
+		except:
+			tkMessageBox.showinfo("Error Connecting", sys.exc_info()[0])
+			
+	def set_artnet_out(self):
+		from ArtNet import ArtNetInterface
+		if self.cues.livecue.output != None:
+			self.cues.livecue.output.close()
+		ip = self.props.stringForKey("artip", "10.255.255.255")
+		iface = ArtNetInterface(ip)
+		self.cues.livecue.output = iface
+		iface.startSending()
+		
 		
 #########################################
 #
@@ -205,7 +242,16 @@ class App:
 			if self.oscin != None:
 				self.oscin.stopListening()
 			sys.exit()
-		
+	
+	def menu_set_usb_out(self):
+		if tkMessageBox.askokcancel("USB", "Set USB DMX Pro as output interface?"):
+			self.set_usb_out()
+	
+	def menu_set_artnet_out(self):
+		if tkMessageBox.askokcancel("Art-Net", "Set Art-Net as output interface?"):
+			self.set_artnet_out()
+
+
 	def menuOSC(self):
 		if self.oscin == None:
 			self.oscin = OSCListener()
@@ -215,7 +261,7 @@ class App:
 			self.oscin = None
 
 	def menuAbout(self):
-		tkMessageBox.showinfo(message='LXConsole|Python v 0.3',detail='build 0626\nCopyright 2014 Claude Heintz Design\nSee source files for license info.',icon='info',title='About LXConsole')
+		tkMessageBox.showinfo(message='LXConsole|Python v 0.5',detail='build 1021\nCopyright 2015 Claude Heintz Design\nSee source files for license info.',icon='info',title='About LXConsole')
 
 	def menuQuickHelp(self):
 		f = open(self.pylxdir + '/quickhelp.txt', 'r')
@@ -405,8 +451,10 @@ class App:
 			self.e.delete(len(self.e.get())-1,END)
 		elif k == "clear":
 			self.e.delete(0, END)
-		elif k == ",":
-			self.e.insert(END, '&')
+		elif k == "-":
+			self.e.insert(END, ' ')
+		elif k == "@":
+			self.e.insert(END, '@')
 		elif k == "a":
 			self.e.insert(END, '@')
 		elif k == "f":
@@ -418,6 +466,14 @@ class App:
 					self.e.insert(END, '@100')
 				self.read_cmd(None)
 		elif k == "x":
+			ce = self.e.get()
+			if len(ce) > 0:
+				if ce.endswith('@'):
+					self.e.insert(END, '0')
+				else:
+					self.e.insert(END, '@0')
+				self.read_cmd(None)
+		elif k == "z":
 			ce = self.e.get()
 			if len(ce) > 0:
 				if ce.endswith('@'):
@@ -469,7 +525,6 @@ class App:
 				self.displayPrevPage()
 				self.e.delete(0, END)
 		else:
-			#print ord(k)
 			self.e.insert(END, k)
 			if k.isdigit():
 				ce = self.e.get()
@@ -535,7 +590,7 @@ class App:
 	def process_at_cmd(self, n, lp):
 		cp = n.split(">")
 		if len(cp) == 1:
-			cp = n.split("&")
+			cp = n.split(",")
 			if len(cp) == 1:
 				self.cues.livecue.setNewLevel(cp[0], lp)
 			else:

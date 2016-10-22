@@ -48,23 +48,20 @@ from operator import attrgetter
 #     LXCues has an LXLiveCue representing a fade-able output state
 #     The livecue has an output interface and
 #     a patch for translating channels to dimmers
+#     livecue interface is set separately from __init__
 #
 #################################################################
 			
 class LXCues:
 
-	def __init__(self, channels, dimmers, interface=None, target_ip ="10.255.255.255"):
-		self.cues = []								# list of cues
+	def __init__(self, channels, dimmers):
+		self.cues = []							# list of cues
 		self.channels = channels					# number of channels in all cues
-		self.current = None							# the current cue
-		self.next = None							# the next cue
+		self.current = None						# the current cue
+		self.next = None						# the next cue
 		self.delegate = None						# delegate
 		self.livecue = LXLiveCue(channels, dimmers) # LXLiveCue can fade between cues
-													# output interface for the live cue
-		if interface == None:
-			self.livecue.output = ArtNetInterface(target_ip)
-		else:
-			self.livecue.output = interface
+
 		self.oscinterface = OSCInterface()
 		
 #####
@@ -162,7 +159,6 @@ class LXCues:
 			else:
 				return False
 		if newcue != None:
-			print newcue.number
 			self.cues.append(newcue)
 			self.cues.sort(key=attrgetter('number'))
 			self.current = newcue
@@ -310,7 +306,8 @@ class LXCues:
 #####
 				
 	def startLiveOutput(self):
-		self.livecue.output.startSending()
+		if self.livecue.output:
+			self.livecue.output.startSending()
 
 #####
 #     stopLiveOutput stops the live cue's output interface from sending DMX
@@ -576,6 +573,7 @@ class LXLiveCue (LXCue):
 		self.stopped = False
 		
 		self.patch = LXPatch(channels, addresses)
+		self.output = None
 
 		
 #####			
@@ -596,12 +594,13 @@ class LXLiveCue (LXCue):
 #####
 	
 	def writeToInterface(self):
-		try:
-			buffer = self.patch.byteArrayFromFloatList(self.livestate, self.master)
-			self.output.setDMXValues(buffer)	# dmx 0-255 levels written to self.output
-			self.output.sendDMXNow()
-		except:
-			print "Could not write to DMX output"
+		if self.output:
+			try:
+				buffer = self.patch.byteArrayFromFloatList(self.livestate, self.master)
+				self.output.setDMXValues(buffer)	# dmx 0-255 levels written to self.output
+				self.output.sendDMXNow()
+			except:
+				print "Could not write to DMX output"
 
 #####		
 #     prepareFade() sets the initialstate and deltastate lists
