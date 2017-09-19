@@ -14,9 +14,10 @@ class LXCuesAsciiParser (USITTAsciiParser):
 
 	def __init__(self, channels, dimmers, interface):
 		USITTAsciiParser.__init__(self)
-		self.cues = LXCues(channels, dimmers, interface)
+		self.cues = LXCues(channels, dimmers)
 		#default is 1-1 patch, start blank
 		self.cues.clearPatch()
+		self.cues.livecue.output = interface;
 		
 	def gethex(self, hc):
 		ohc = ord(hc)
