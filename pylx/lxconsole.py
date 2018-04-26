@@ -242,7 +242,7 @@ class App:
 			self.oscin = None
 
 	def menuAbout(self):
-		tkmsg_box.showinfo(message='LXConsole|Python v 0.5',detail='build 1021\nCopyright 2015 Claude Heintz Design\nSee source files for license info.',icon='info',title='About LXConsole')
+		tkmsg_box.showinfo(message='LXConsole|Python v 0.8',detail='build 4026\nCopyright 2015-2018 Claude Heintz Design\nSee source files for license info.',icon='info',title='About LXConsole')
 
 	def menuQuickHelp(self):
 		f = open(self.pylxdir + '/quickhelp.txt', 'r')

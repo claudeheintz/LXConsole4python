@@ -1,5 +1,5 @@
 # LXConsole4python
-LXConsole|Python is an implementation of LXConsole for Raspberry Pi.  It is distributed as Python source code and can run on any system with Python installed.  (LXConsole for Python depends on the tkinter module for the GUI)
+LXConsole|Python is an implementation of LXConsole for Raspberry Pi/Linux/Windows.  It is distributed as Python source code and can run on any system with Python installed.  (LXConsole for Python depends on the tkinter module for the GUI)
 
 # Instructions for Raspberry Pi
 
@@ -20,8 +20,10 @@ LXConsole|Python has a very basic command line interface.  A summary is availabl
 
 # Running LXConsole!Python on other platforms
 
-You can run LXConsole!Python on other platforms through the command line.  On OS X (and other unix type operating systems) the command might look like this if you uncompress pylx.zip to the desktop:
+You can run LXConsole!Python on other platforms through the command line.  On Linux, OS X, and other unix type operating systems the command might look like this if you uncompress pylx.zip to the desktop:
 
+$ python /Home/username/Desktop/pylx/lxconsole.py
+or
 $ python /Users/username/Desktop/pylx/lxconsole.py
 
 (of course, you cave to replace username with your own)
