@@ -320,6 +320,7 @@ class App:
 		
 	def updateDisplay(self):
 		self.cues.updateDisplay(self.chandisp)
+		root.update_idletasks()
 		
 	def updateOutput(self):
 		self.cues.updateDisplay(self.chandisp)
