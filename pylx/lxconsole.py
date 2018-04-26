@@ -18,10 +18,16 @@
 #
 #################################################################
 
-
-from Tkinter import *
-import tkFileDialog
-import tkMessageBox
+try:
+	from Tkinter import *
+	import tkFileDialog as tkfile_dialog
+	import tkMessageBox as tkmsg_box
+	# python2 imports
+except:
+	from tkinter import *
+	import tkinter.filedialog as tkfile_dialog
+	import tkinter.messagebox as tkmsg_box
+	#python3 imports
 from CTProperties import CTProperties
 from LXChannelDisplay import LXChannelDisplay
 from LXCues import LXCues
@@ -169,7 +175,7 @@ class App:
 			self.cues.livecue.output = iface
 			iface.startSending()
 		except:
-			tkMessageBox.showinfo("Error Connecting", sys.exc_info()[0])
+			tkmsg_box.showinfo("Error Connecting", sys.exc_info()[0])
 			
 	def set_artnet_out(self):
 		from ArtNet import ArtNetInterface
@@ -188,7 +194,7 @@ class App:
 #########################################
 		
 	def menuOpen(self):
-		filename = tkFileDialog.askopenfilename(filetypes=[('ASCII files','*.asc')])
+		filename = tkfile_dialog.askopenfilename(filetypes=[('ASCII files','*.asc')])
 		if len(filename) > 0:
 			p = LXCuesAsciiParser(self.cues.channels, self.cues.livecue.patch.addresses, self.cues.livecue.output)
 			message = p.parseFile(filename)
@@ -198,32 +204,32 @@ class App:
 				self.lastcomplete = None
 				self.back = None
 				self.path = filename
-			tkMessageBox.showinfo(message='Open',detail=message,icon='info',title='Open')
+			tkmsg_box.showinfo(message='Open',detail=message,icon='info',title='Open')
 			self.boss.title(os.path.basename(self.path))
 			self.updateCurrent()
 		
 	def menuSave(self):
 		if len(self.path) > 0:
-			filename = tkFileDialog.asksaveasfilename(defaultextension="asc", initialfile=os.path.basename(self.path), initialdir=os.path.dirname(self.path))
+			filename = tkfile_dialog.asksaveasfilename(defaultextension="asc", initialfile=os.path.basename(self.path), initialdir=os.path.dirname(self.path))
 		else:
-			filename = tkFileDialog.asksaveasfilename(defaultextension="asc")
+			filename = tkfile_dialog.asksaveasfilename(defaultextension="asc")
 		if len(filename) > 0:
 			f = open(filename, 'w')
 			f.write(self.cues.asciiString())
 			f.close()
 		
 	def menuQuit(self):
-		if tkMessageBox.askokcancel("Quit", "Do you really wish to quit?"):
+		if tkmsg_box.askokcancel("Quit", "Do you really wish to quit?"):
 			if self.oscin != None:
 				self.oscin.stopListening()
 			sys.exit()
 	
 	def menu_set_usb_out(self):
-		if tkMessageBox.askokcancel("USB", "Set USB DMX Pro as output interface?"):
+		if tkmsg_box.askokcancel("USB", "Set USB DMX Pro as output interface?"):
 			self.set_usb_out()
 	
 	def menu_set_artnet_out(self):
-		if tkMessageBox.askokcancel("Art-Net", "Set Art-Net as output interface?"):
+		if tkmsg_box.askokcancel("Art-Net", "Set Art-Net as output interface?"):
 			self.set_artnet_out()
 
 
@@ -236,7 +242,7 @@ class App:
 			self.oscin = None
 
 	def menuAbout(self):
-		tkMessageBox.showinfo(message='LXConsole|Python v 0.5',detail='build 1021\nCopyright 2015 Claude Heintz Design\nSee source files for license info.',icon='info',title='About LXConsole')
+		tkmsg_box.showinfo(message='LXConsole|Python v 0.5',detail='build 1021\nCopyright 2015 Claude Heintz Design\nSee source files for license info.',icon='info',title='About LXConsole')
 
 	def menuQuickHelp(self):
 		f = open(self.pylxdir + '/quickhelp.txt', 'r')
@@ -589,7 +595,7 @@ class App:
 			else:
 				recorded = self.cues.recordCueFromLive()
 			if recorded == False:
-				shouldreplace = tkMessageBox.askyesno("Cue Exists!", "Replace?")
+				shouldreplace = tkmsg_box.askyesno("Cue Exists!", "Replace?")
 				if shouldreplace == True:
 					if  len(cp) == 2:
 						recorded = self.cues.recordCueFromLive(float(cp[1]), 1)
@@ -703,7 +709,7 @@ class App:
 			if len(cp[1]) > 0:
 				q = self.cues.cueForNumber(float(cp[1]))
 				if q != None:
-					shoulddelete = tkMessageBox.askyesno("Delete Cue!", "Are you sure?")
+					shoulddelete = tkmsg_box.askyesno("Delete Cue!", "Are you sure?")
 					if shoulddelete == True:
 						self.cues.removeCue(q)
 
