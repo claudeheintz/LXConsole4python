@@ -11,8 +11,9 @@ The initial configuration is for 300 channels and 512 dimmers.  Output is broadc
 
 In order for the output to work properly, you need to setup an ethernet interface with an appropriate static ip address and netmask.  The staticip.sh shell file can do this for you.  (You may need to do Properties->Permissions->Make this file executable in order to double-click to execute the script.)  You can also type the following commands into a terminal:
 
-sudo ifconfig eth0 add 10.1.110.132
-sudo ifconfig eth0:0 netmask 255.0.0.0
+`sudo ifconfig eth0 add 10.1.110.132`
+
+`sudo ifconfig eth0:0 netmask 255.0.0.0`
 
 
 LXConsole|Python has a very basic command line interface.  A summary is available from the menu Help->Quick Help.
@@ -22,14 +23,16 @@ LXConsole|Python has a very basic command line interface.  A summary is availabl
 
 You can run LXConsole!Python on other platforms through the command line.  On Linux, OS X, and other unix type operating systems the command might look like this if you uncompress pylx.zip to the desktop:
 
-$ python /Home/username/Desktop/pylx/lxconsole.py
-or
-$ python /Users/username/Desktop/pylx/lxconsole.py
+`python /Home/username/Desktop/pylx/lxconsole.py`
 
-(of course, you cave to replace username with your own)
+or
+
+`python /Users/username/Desktop/pylx/lxconsole.py`
+
+(Of course, you have to replace username with your own.  Replace python with python3 if necessary)
 
 # DMX USB Pro support
 
 DMXUSBPro compatible version requires pyserial https://pypi.python.org/pypi/pyserial. The lxconsole.properties file should be edited at the line widget=<inteface location>. The included file is set for ttyUSB0 on Linux.  On Linux, ttyUSB0 may be owned by root.  To write to it, you may need to add your username to the dialout group.  Using the terminal use the command
 
-sudo adduser $USER dialout
+`sudo adduser $USER dialout`
