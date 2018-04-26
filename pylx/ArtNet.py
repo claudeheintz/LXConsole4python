@@ -80,7 +80,11 @@ class ArtNetInterface(DMXInterface):
 		except:
 			print ("Socket Error")
 		self.buffer = bytearray(529)
-		self.buffer[0:6] = bytes("Art-Net", 'utf-8')
+		try:
+			self.buffer[0:6] = "Art-Net"
+		except:
+			self.buffer[0:6] = bytes("Art-Net", 'utf-8')
+			#python 3
 		self.buffer[7] = 0
 		self.buffer[8] = 0		#opcode l/h
 		self.buffer[9] = 0x50
