@@ -14,6 +14,7 @@ In order for the output to work properly, you need to setup an ethernet interfac
 sudo ifconfig eth0 add 10.1.110.132
 sudo ifconfig eth0:0 netmask 255.0.0.0
 
+
 LXConsole|Python has a very basic command line interface.  A summary is available from the menu Help->Quick Help.
 
 
@@ -27,4 +28,4 @@ $ python /Users/username/Desktop/pylx/lxconsole.py
 
 # DMX USB Pro support
 
-DMXUSBPro compatible version requires pyserial https://pypi.python.org/pypi/pyserial. The lxconsole.properties file should be edited at the line widget=<inteface location>. The included file is for COM3 on Windows 8.1.
+DMXUSBPro compatible version requires pyserial https://pypi.python.org/pypi/pyserial. The lxconsole.properties file should be edited at the line widget=<inteface location>. The included file is set for ttyUSB0 on Linux.  On Linux, ttyUSB0 may be owned by root.  To write to it, you may need to add your username to the dialout group.  Using the terminal enter> sudo adduser $USER dialout
