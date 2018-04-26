@@ -9,7 +9,7 @@ You may need to set execute permissions on the lxconsole.py file.  To do this, r
 
 The initial configuration is for 300 channels and 512 dimmers.  Output is broadcast Art-Net on 10.255.255.255.  You can edit the lxconsole.properties file to change these settings.
 
-In order for the output to work properly, you need to setup an ethernet interface with an appropriate static ip address and netmask.  The staticip shell file can do this for you.  (You may need to do Properties->Permissions->Make this file executable in order to double-click to execute the script.)  You can also type the following commands into a terminal:
+In order for the output to work properly, you need to setup an ethernet interface with an appropriate static ip address and netmask.  The staticip.sh shell file can do this for you.  (You may need to do Properties->Permissions->Make this file executable in order to double-click to execute the script.)  You can also type the following commands into a terminal:
 
 sudo ifconfig eth0 add 10.1.110.132
 sudo ifconfig eth0:0 netmask 255.0.0.0
@@ -28,4 +28,6 @@ $ python /Users/username/Desktop/pylx/lxconsole.py
 
 # DMX USB Pro support
 
-DMXUSBPro compatible version requires pyserial https://pypi.python.org/pypi/pyserial. The lxconsole.properties file should be edited at the line widget=<inteface location>. The included file is set for ttyUSB0 on Linux.  On Linux, ttyUSB0 may be owned by root.  To write to it, you may need to add your username to the dialout group.  Using the terminal enter> sudo adduser $USER dialout
+DMXUSBPro compatible version requires pyserial https://pypi.python.org/pypi/pyserial. The lxconsole.properties file should be edited at the line widget=<inteface location>. The included file is set for ttyUSB0 on Linux.  On Linux, ttyUSB0 may be owned by root.  To write to it, you may need to add your username to the dialout group.  Using the terminal use the command
+
+sudo adduser $USER dialout
