@@ -1,7 +1,7 @@
 #   DMXUSBPro.py
 #
 #   by Claude Heintz
-#   copyright 2015 by Claude Heintz Design
+#   copyright 2015-2018 by Claude Heintz Design
 #
 #  see license included with this distribution or
 #  https://www.claudeheintzdesign.com/lx/opensource.html
@@ -10,8 +10,17 @@
 import threading
 #   requires pyserial download from: https://pypi.python.org/pypi/pyserial
 import serial
+
+try:
+	import tkMessageBox as tkmsg_box
+	# python2 import
+except:
+	import tkinter.messagebox as tkmsg_box
+	# python3 import
+	
 import sys
 from ArtNet import DMXInterface
+
 
 
 class DMXUSBProInterface(DMXInterface):
@@ -42,6 +51,7 @@ class DMXUSBProInterface(DMXInterface):
             self.ok = True
         except:
             print ("Could not open serial connection", sys.exc_info()[0])
+            tkmsg_box.showinfo("Error opening serial connection ", sys.exc_info()[0])
         
 
     def setDMXValue(self, address, value):
