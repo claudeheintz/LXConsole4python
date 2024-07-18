@@ -194,13 +194,18 @@ class ArtNetInterface(DMXInterface):
 #
 #########################################
 
-    def __init__(self, iface_ip, target_ip = None, net=0, subnet=0, univ=0):
+    def __init__(self, iface_ip, target="auto", net=0, subnet=0, univ=0):
         super().__init__()
         self.seqcounter = 0
         self.prcounter = 0
         self.target_list = []
         self.localip = iface_ip
-        self.unicast_ip = target_ip
+        if ( target == "auto" ):
+             self.unicast_ip = None
+        elif ( target == "broadcast" ):
+            self.unicast_ip = CTNetUtil.findBroadcastAddress(iface_ip)
+        else:
+            self.unicast_ip = target
         self.loopback = "127.0.0.1"
         self.last_poll_time = 0.0
         self.namebytes = bytes("LXWeb2DMX", 'utf-8')
@@ -536,12 +541,13 @@ class ArtNetInterface(DMXInterface):
 #
 #########################################
     def foundNode( self, ipaddr ):
-        x = self.targetWithAddress(ipaddr)
-        if ( x == None ):
-            self.target_list.append(ArtNetNode(ipaddr))
-            print( "added node: ", ipaddr )
-        else:
-            x.pollReceived()
+        if (self.unicast_ip == None):
+            x = self.targetWithAddress(ipaddr)
+            if ( x == None ):
+                self.target_list.append(ArtNetNode(ipaddr))
+                print( "added node: ", ipaddr )
+            else:
+                x.pollReceived()
 
     def targetWithAddress(self, ipaddr):
         for n in self.target_list:

@@ -183,11 +183,8 @@ class App:
 		from CTNetUtil import CTNetUtil
 		if self.cues.livecue.output != None:
 			self.cues.livecue.output.close()
-		ip = self.props.stringForKey("artip", "10.255.255.255")
-		if ( ip == "auto" ):
-			iface = ArtNetInterface(CTNetUtil.get_ip_address())
-		else:
-			iface = ArtNetInterface(CTNetUtil.get_ip_address(), ip)
+		artout = self.props.stringForKey("artnet_output", "auto")
+		iface = ArtNetInterface(CTNetUtil.get_ip_address(), artout)
 		self.cues.livecue.output = iface
 		iface.startSending()
 		
