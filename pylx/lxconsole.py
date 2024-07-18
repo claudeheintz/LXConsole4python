@@ -3,7 +3,7 @@
 #   lxconsole.py
 #
 #	by Claude Heintz
-#	copyright 2014-15 by Claude Heintz Design
+#	copyright 2014-2024 by Claude Heintz Design
 #
 #  see license included with this distribution or
 #  https://www.claudeheintzdesign.com/lx/opensource.html
@@ -37,6 +37,7 @@ from OSCListener import OSCListener
 import time
 import threading
 import os
+import sys
 
 class App:
 
@@ -179,10 +180,14 @@ class App:
 			
 	def set_artnet_out(self):
 		from ArtNet import ArtNetInterface
+		from CTNetUtil import CTNetUtil
 		if self.cues.livecue.output != None:
 			self.cues.livecue.output.close()
 		ip = self.props.stringForKey("artip", "10.255.255.255")
-		iface = ArtNetInterface(ip)
+		if ( ip == "auto" ):
+			iface = ArtNetInterface(CTNetUtil.get_ip_address())
+		else:
+			iface = ArtNetInterface(CTNetUtil.get_ip_address(), ip)
 		self.cues.livecue.output = iface
 		iface.startSending()
 		
@@ -409,7 +414,7 @@ class App:
 #########################################
         
 	def key(self, event):
-		self.external_key(event.char)
+		self.external_key(event.keysym)
 		return "break"		
 		
  #########################################
@@ -423,15 +428,15 @@ class App:
 	def external_key(self, k):
 		if len(k) == 0:
 			return
-		if k == "enter":
+		if k == "Enter":
 			self.read_cmd(None)
-		elif ord(k) == 13:
+		elif k == "Return":
 			self.read_cmd(None)
-		elif ord(k) == 127:
+		elif k == "Escape":
+			self.e.delete(0,END)
+		elif k == "BackSpace":
 			self.e.delete(len(self.e.get())-1,END)
-		elif ord(k) == 8:
-			self.e.delete(len(self.e.get())-1,END)
-		elif k == "clear":
+		elif k == "Clear":
 			self.e.delete(0, END)
 		elif k == "-":
 			self.e.insert(END, ' ')

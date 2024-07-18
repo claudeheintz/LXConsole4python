@@ -25,9 +25,10 @@ class CTProperties:
 	def parseString(self, string):
 		lines = string.split("\n")
 		for l in lines:
-			pair = l.split("=")
-			if len(pair) == 2:
-				self.properties[pair[0]] = pair[1]
+			if ( not l.startswith("#") ):
+				pair = l.split("=")
+				if len(pair) == 2:
+					self.properties[pair[0]] = pair[1]
 			
 	def parseFile(self, filename):
 		f = open(filename, 'r')
