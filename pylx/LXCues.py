@@ -415,6 +415,9 @@ class LXCue:
     def setNewLevel(self, channel, level):
         self.livestate[int(channel)-1] = float(level)
         
+    def getLevel(self, channel):
+    	return self.livestate[int(channel)-1]
+        
 #####
 #     setDimmerLevel sets a level of a channel in the livestate
 #     (the channel number is converted into a list index by subtracting 1)
